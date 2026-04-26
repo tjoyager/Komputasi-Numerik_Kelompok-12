@@ -159,6 +159,11 @@ label_hasil.grid(row=6, column=0, columnspan=2, pady=10)
 root.mainloop()
 ```
 
+### Screenshot Hasil Program
+
+Hasil run program untuk mencari akar persamaan dari f(x) = (1 - 0.6*x)/x, dengan x1 = 1, x2 = 2, dan iterasi sebanyak 5 kali:
+![Picture](./files/pic.png)
+
 ### Alur Kerja Program
 
 1. Persiapan Antarmuka/Tampilan (GUI)
@@ -181,8 +186,8 @@ root.mainloop()
     - Menghitung persentase error relatif semu berdasarkan selisih `xr` saat ini dengan `xr` sebelumnya. Khusus iterasi pertama, nilai error ditandai dengan "-".
     - Memasukkan nomor iterasi, nilai `xr`, `f(xr)`, dan error ke dalam tabel GUI.
     - Pembaruan Batas (Update Interval): 
-    a. Jika `f(x1) * f(xr) < 0`, maka batas atas (`x2`) diperbarui menjadi `xr`.
-    b. Jika tidak, maka batas bawah (`x1`) diperbarui menjadi `xr`.
+        a. Jika `f(x1) * f(xr) < 0`, maka batas atas (`x2`) diperbarui menjadi `xr`.
+        b. Jika tidak, maka batas bawah (`x1`) diperbarui menjadi `xr`.
 
 4. Penyajian Hasil Akhir
     Setelah seluruh iterasi selesai, program memperbarui label di bawah tabel untuk menampilkan estimasi akar terakhir secara jelas (Akar ≈ `xr`).
