@@ -1,4 +1,10 @@
-# Algoritma Metode Regula Falsi (Python)
+# Algoritma Metode Regula Falsi
+
+### Alur Pengerjaan Metode Falsi
+
+1. 
+
+### Code (Python)
 
 ```python
 import numpy as np
@@ -130,3 +136,45 @@ label_hasil = tk.Label(root, text="Akar ≈ -", font=("Arial", 12, "bold"))
 label_hasil.grid(row=6, column=0, columnspan=2, pady=10)
 
 root.mainloop()
+```
+
+### Alur Kerja Program
+
+1. Persiapan dan Pembuatan Antarmuka (GUI)
+
+Program menggunakan pustaka tkinter untuk membuat antarmuka pengguna (GUI).
+Program menyiapkan kolom input agar pengguna bisa memasukkan:
+Fungsi matematika f(x).
+Batas bawah x1 dan batas atas x2.
+Jumlah batas iterasi maksimum.
+Program juga menyiapkan sebuah tabel (Treeview) untuk menampilkan proses hitungan per iterasi, dan sebuah tombol "Hitung" untuk memulai perhitungan.
+2. Pengambilan dan Validasi Input (Fungsi regula_falsi)
+
+Saat tombol "Hitung" ditekan, program mengambil nilai dari semua kolom input.
+Input fungsi matematika (dalam bentuk teks/string) dikonversi menjadi fungsi Python yang bisa dieksekusi (dihitung) menggunakan fungsi eval().
+Validasi Perubahan Tanda: Program mengecek apakah f(x1) * f(x2) > 0. Jika hasilnya positif (keduanya memiliki tanda yang sama, misalnya sama-sama positif atau negatif), program akan menampilkan pesan error "Tidak ada perubahan tanda!". Artinya, tidak ada jaminan akar berada di antara rentang x1 dan x2 tersebut.
+Validasi Pembagian Nol: Program mengecek apakah f(x1) == f(x2). Jika sama, program akan berhenti dan menampilkan error untuk mencegah pembagian dengan nol pada rumus Regula Falsi di tahap selanjutnya.
+3. Proses Iterasi Metode Regula Falsi
+
+Program membersihkan tabel GUI dari hasil perhitungan sebelumnya (jika ada).
+Program memulai perulangan (looping) sebanyak jumlah iterasi yang diinputkan pengguna.
+Di dalam perulangan, program menghitung perkiraan akar baru (xr) menggunakan rumus Regula Falsi: $$xr = x2 - \frac{f(x2) \cdot (x1 - x2)}{f(x1) - f(x2)}$$
+Program kemudian menghitung nilai fungsi pada titik xr tersebut, yaitu f(xr).
+Perhitungan Error: Program menghitung persentase error relatif semu (berdasarkan selisih xr sekarang dengan xr pada iterasi sebelumnya). Pada iterasi pertama, error diberi tanda "-" karena belum ada nilai sebelumnya untuk dibandingkan.
+Hasil iterasi saat ini (Iterasi ke-i, nilai xr, nilai f(xr), dan nilai Error) dimasukkan ke dalam tabel GUI.
+Pembaruan Batas (Update Interval): Program mengecek posisi akar selanjutnya dengan mengalikan f(x1) * f(xr):
+Jika hasilnya < 0 (negatif, yang berarti ada perubahan tanda di antara x1 dan xr), maka batas atas yang baru bergeser menjadi xr (x2 = xr).
+Jika tidak, maka batas bawah yang baru bergeser menjadi xr (x1 = xr).
+4. Menampilkan Hasil Akhir
+
+Setelah perulangan selesai, program akan memperbarui label hasil di bawah tabel untuk menampilkan estimasi nilai akar terakhir (Akar ≈ xr).
+5. Visualisasi Grafik (Plotting)
+
+Program menggunakan pustaka matplotlib untuk menggambar grafik fungsi f(x) di sekitar area pencarian awal (x1 hingga x2).
+Program menggambar garis horizontal pada y = 0 (sumbu x).
+Titik estimasi akar terakhir (xr, f(xr)) ditandai secara khusus dengan titik berwarna merah.
+Grafik ini kemudian ditampilkan ke layar pada jendela baru.
+6. Penanganan Error (Exception Handling)
+
+Seluruh proses perhitungan dibungkus menggunakan blok try...except.
+Jika pengguna memasukkan format angka atau fungsi matematika yang salah (misalnya, memasukkan huruf pada kolom batas x1), program tidak akan crash, melainkan akan menangkap kesalahan tersebut dan memunculkan pop-up error "Input tidak valid!".
