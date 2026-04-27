@@ -9,20 +9,20 @@
 
 ### Metode Regula Falsi
 
-Regula Falsi adalah metode untuk mencari akar persamaaan dengan menggunakan interpolasi linear dimana kita menarik garis lurus antara titik koordinat bawah (xl, f(xl) ke batas atas (xu, f(xu))). Titik di mana garis lurus tersebut memotong sumbu X dijadikan sebagai tebakan akar baru (xr). Karena titik ini "palsu" (bukan di kurva asli), metode ini disebut False Position.
+Regula Falsi adalah metode untuk mencari akar persamaaan dengan menggunakan interpolasi linear dimana kita menarik garis lurus antara titik koordinat bawah (x1, f(x1) ke batas atas (x2, f(x2))). Titik di mana garis lurus tersebut memotong sumbu X dijadikan sebagai tebakan akar baru (xr). Karena titik ini "palsu" (bukan di kurva asli), metode ini disebut False Position.
 
 ### Alur Pengerjaan Metode Falsi
 
-1. Pilih sembarang dua titik yang akan menjadi xl dan xu. Untuk memastikan pilihan kita valid, kita harus memasukannya ke f(xl) kali f(xu) < 0 :
-   - Jika hasilnya negatif, maka terdapat akar di antara interval xl dan xu, kurva telah menyeberangi sumbu x dan bisa lanjut ke langkah 2
-   - Jika hasilnya positif, maka tidak ada akar di antara interval xl dan xu, kurva belum memotong sumbu x dan harus mencari titik tebakan baru
-   - Jika f(xl) kali f(xu) = 0, maka batas tebakan xl atau xu itu sendiri yang merupakan nilai akar pastinya
+1. Pilih sembarang dua titik yang akan menjadi x1 dan x2. Untuk memastikan pilihan kita valid, kita harus memasukannya ke f(x1) kali f(x2) < 0 :
+   - Jika hasilnya negatif, maka terdapat akar di antara interval x1 dan x2, kurva telah menyeberangi sumbu x dan bisa lanjut ke langkah 2
+   - Jika hasilnya positif, maka tidak ada akar di antara interval x1 dan x2, kurva belum memotong sumbu x dan harus mencari titik tebakan baru
+   - Jika f(x1) kali f(x2) = 0, maka batas tebakan x1 atau x2 itu sendiri yang merupakan nilai akar pastinya
 2. Jika hasilnya negatif, maka kita bisa mencari nilai tengah atau nilai x baru(xr) menggunakan rumus :
-   xr = xu - [ f(xu) * (xl - xu) / (f(xl) - f(xu))]
-3. Masukan xr ke f(xr), kemudian kembali evaluasi f(xl) kali f(xr) < 0 :
-   - Jika hasilnya negatif, maka akar berada di sub-interval atas/kanan. Maka batas bawah akan bergeser xl = xr
-   - Jika hasilnya positif, maka akar berada di sub-interval bawah/kiri. Maka batas atas akan bergeser xu = xr
-   - Jika f(Xl) kali f(Xr) = 0, maka akar sudah ditemukan yaitu xr, iterasi selesai
+   xr = x2 - [ f(x2) * (x1 - x2) / (f(x1) - f(x2))]
+3. Masukan xr ke f(xr), kemudian kembali evaluasi f(x1) kali f(xr) < 0 :
+   - Jika hasilnya negatif, maka akar berada di sub-interval atas/kanan. Maka batas bawah akan bergeser x1 = xr
+   - Jika hasilnya positif, maka akar berada di sub-interval bawah/kiri. Maka batas atas akan bergeser x2 = xr
+   - Jika f(x1) kali f(Xr) = 0, maka akar sudah ditemukan yaitu xr, iterasi selesai
 4. Ulangi proses, kembali ke langkah nomor 2 dengan nilai a dan b yang sudah diperbarui. Lakukan perulangan ini berulang-ulang sampai kondisi toleransi error di langkah nomor 3 terpenuhi.
 
 ### Full Code (Python)
@@ -201,3 +201,14 @@ Hasil run program untuk mencari akar persamaan dari f(x) = (1 - 0.6*x)/x, dengan
 6. Penanganan Kesalahan (Exception Handling)
     - Jika ditemukan kesalahan format, seperti memasukkan karakter non-angka pada kolom koordinat atau penulisan fungsi yang tidak dikenali Python, program tidak akan berhenti mendadak (crash).
     - Program akan menangkap error tersebut dan memunculkan pop-up peringatan "Input tidak valid!".
+
+### Screenshot Hasil Program dengan Contoh Lain
+f(x) = x**2 - 4 <br>
+x1 = 1, x2 = 3, Iterasi = 5
+![Picture](./files/pic2.png)
+f(x) = x**3 - 100 <br>
+x1 = 4, x2 = 5, Iterasi = 5
+![Picture](./files/pic3.png)
+f(x) = sin(x) - 5*x + 2 <br>
+x1 = 0, x2 = 1, Iterasi = 5
+![Picture](./files/pic4.png)
