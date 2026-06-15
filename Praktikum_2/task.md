@@ -11,19 +11,22 @@ Komponen penilaian dari tugas praktikum ini:
 Tools:
 Bahasa: python
 
-Pembagian Tugas:
-A. Farrel Marvellino Sugianto (UI, Parser, & Output Visualization)
-   - Implementasi modul input yang fleksibel: Memungkinkan pengguna memasukkan fungsi matematika dalam bentuk string (menggunakan library seperti sympy).
-   - Validasi Input: Memastikan batas integrasi (a, b) dan jumlah iterasi awal adalah valid.
-   - Visualisasi Output: Membuat fungsi untuk mencetak "Romberg Table" ke terminal dengan format yang rapi dan mudah dibaca.
-   - Penjelasan Program: Menambahkan narasi di dalam program yang menjelaskan keunggulan Romberg dibandingkan Trapezoidal biasa berdasarkan hasil output.
+Pembagian Tugas (GUI Edition):
 
-B. Ferdyan Dimas Satria (Base Trapezoidal Implementation)
-   - Implementasi Aturan Trapezoidal: Membuat fungsi dasar untuk menghitung integral dengan metode Trapezoidal.
-   - Optimasi Kolom Pertama (R[k,0]): Menggunakan metode rekursif trapezoidal untuk efisiensi perhitungan (menghitung nilai baru hanya pada titik-titik tengah baru).
-   - Struktur Data: Merancang matriks atau array dua dimensi untuk menampung nilai-nilai integrasi Romberg.
+A. Farrel Marvellino Sugianto (GUI Architect & User Interface)
+   - Merancang layout utama menggunakan `tkinter` dan `ttk` (Entry, Button, Labels).
+   - Mengimplementasikan `ttk.Treeview` untuk menampilkan tabel Romberg secara dinamis dan rapi.
+   - Menangani event handler untuk tombol "Hitung" dan manajemen jendela (root, geometry, styles).
+   - Validasi input GUI: Memastikan input fungsi, batas (a, b), iterasi, dan toleransi tidak kosong dan valid.
 
-C. Hadryan Rizky Dimas Saputra (Romberg Core & Extrapolation Logic)
-   - Implementasi Richardson Extrapolation: Menghitung kolom-kolom berikutnya (R[k, j]) dari tabel Romberg menggunakan rumus ekstrapolasi.
-   - Kontrol Iterasi & Toleransi: Mengatur kapan iterasi harus berhenti berdasarkan nilai toleransi error yang diinginkan atau batas maksimum iterasi.
-   - Logika Perbandingan: Mengintegrasikan hasil dari Ferdyan dan menerapkan logika perbaikan akurasi secara bertahap hingga mencapai nilai optimal.
+B. Ferdyan Dimas Satria (Math Engine & Data Visualization)
+   - Implementasi dasar integrasi: Aturan Trapezoidal tunggal dan rekursif.
+   - Implementasi Visualisasi: Menggunakan `matplotlib` untuk memplot fungsi $f(x)$ dalam rentang $[a, b]$.
+   - Fitur Shading: Memberikan efek arsiran (fill_between) pada area di bawah kurva untuk memvisualisasikan area yang diintegrasikan.
+   - Integrasi plot matplotlib ke dalam jendela tkinter (menggunakan FigureCanvasTkAgg jika diperlukan atau window terpisah).
+
+C. Hadryan Rizky Dimas Saputra (Romberg Logic & Controller)
+   - Implementasi Algoritma Romberg: Richardson Extrapolation untuk memperbaiki akurasi.
+   - Data Controller: Mengolah input string dari GUI (menggunakan `sympy` atau `eval` dengan aman) menjadi nilai numerik.
+   - Formatting Result: Mengonversi matriks hasil Romberg menjadi format list/tuple yang siap dimasukkan ke dalam `Treeview` oleh Farrel.
+   - Error Handling: Menangani kesalahan matematis (seperti pembagian nol atau fungsi yang tidak terdefinisi di rentang tertentu) dengan `messagebox`.
