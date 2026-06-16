@@ -5,6 +5,14 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import sympy as sp
 
+entry_f = None
+entry_a = None
+entry_b = None
+entry_iter = None
+entry_tol = None
+tree = None
+plot_frame = None
+
 # =========================================================================
 # BAGIAN B: Ferdyan Dimas Satria (Math Foundation & Visualization)
 # =========================================================================
@@ -78,11 +86,27 @@ def on_calculate():
     """
     try:
         # 1. Ambil input dari GUI (Bagian A)
+        f_str = entry_f.get()
+        a_val = float(entry_a.get())
+        b_val = float(entry_b.get())
+        max_i = int(entry_iter.get())
+        tol_val = float(entry_tol.get())
+
+        if not f_str:
+            raise ValueError("Fungsi f(x) tidak boleh kosong.")
+            
         # 2. Parsing fungsi string menjadi callable (Bagian C)
+        
         # 3. Jalankan Integrasi Romberg (Bagian C)
+
         # 4. Update Treeview (Bagian A)
+
         # 5. Update Plot (Bagian B)
-        pass
+        
+        messagebox.showinfo("Info", "Input tervalidasi. Menunggu penyelesaian fungsi Romberg (Bagian C).")
+        
+    except ValueError as ve:
+        messagebox.showerror("Kesalahan Input", f"Format input salah: {ve}")
     except Exception as e:
         messagebox.showerror("Error", f"Terjadi kesalahan: {e}")
 
@@ -91,13 +115,25 @@ def on_calculate():
 # BAGIAN A: Farrel Marvellino Sugianto (GUI Layout & Treeview)
 # =========================================================================
 def setup_gui():
+    global entry_f, entry_a, entry_b, entry_iter, entry_tol, tree, plot_frame
+    
     root = tk.Tk()
     root.title("Praktikum 2: Integrasi Romberg")
-    root.geometry("900x600")
+    root.geometry("950x650")
+    
+    style = ttk.Style()
+    style.theme_use('clam')
+    style.configure("Treeview.Heading", font=('Helvetica', 10, 'bold'))
 
     # --- Panel Input (Kiri) ---
-    input_frame = ttk.LabelFrame(root, text=" Input Parameter ")
-    input_frame.pack(side="left", fill="y", padx=10, pady=10)
+    left_frame = ttk.Frame(root, width=250)
+    left_frame.pack(side="left", fill="y", padx=10, pady=10)
+    left_frame.pack_propagate(False)
+
+    input_frame = ttk.LabelFrame(left_frame, text=" Input Parameter ")
+    input_frame.pack(fill="x", pady=5)
+
+    input_frame.columnconfigure(1, weight=1)
 
     # TODO: Tambahkan Entry untuk f(x), a, b, max_iter, tol
     # Contoh:
@@ -105,21 +141,75 @@ def setup_gui():
     # entry_f = ttk.Entry(input_frame)
     # entry_f.grid(row=0, column=1, padx=5, pady=5)
 
-    btn_hitung = ttk.Button(input_frame, text="Hitung Integrasi", command=on_calculate)
-    btn_hitung.pack(pady=20)
+    ttk.Label(input_frame, text="Fungsi f(x):").grid(row=0, column=0, sticky="w", padx=5, pady=8)
+    entry_f = ttk.Entry(input_frame)
+    entry_f.insert(0, "sin(x)")
+    entry_f.grid(row=0, column=1, sticky="ew", padx=5, pady=8)
+
+    ttk.Label(input_frame, text="Batas Bawah (a):").grid(row=1, column=0, sticky="w", padx=5, pady=8)
+    entry_a = ttk.Entry(input_frame)
+    entry_a.insert(0, "0")
+    entry_a.grid(row=1, column=1, sticky="ew", padx=5, pady=8)
+
+    ttk.Label(input_frame, text="Batas Atas (b):").grid(row=2, column=0, sticky="w", padx=5, pady=8)
+    entry_b = ttk.Entry(input_frame)
+    entry_b.insert(0, "3.14159")
+    entry_b.grid(row=2, column=1, sticky="ew", padx=5, pady=8)
+
+    ttk.Label(input_frame, text="Maks Iterasi (k):").grid(row=3, column=0, sticky="w", padx=5, pady=8)
+    entry_iter = ttk.Entry(input_frame)
+    entry_iter.insert(0, "5")
+    entry_iter.grid(row=3, column=1, sticky="ew", padx=5, pady=8)
+
+    ttk.Label(input_frame, text="Toleransi Error:").grid(row=4, column=0, sticky="w", padx=5, pady=8)
+    entry_tol = ttk.Entry(input_frame)
+    entry_tol.insert(0, "1e-6")
+    entry_tol.grid(row=4, column=1, sticky="ew", padx=5, pady=8)
+
+    btn_hitung = ttk.Button(left_frame, text="Hitung Integrasi Romberg", command=on_calculate)
+    btn_hitung.pack(fill="x", pady=15, ipady=5)
+
+    info_lbl = ttk.Label(left_frame, text="Catatan:\nGunakan format python untuk math.\nMisal: x**2 + sin(x) * exp(x)", foreground="gray", justify="left")
+    info_lbl.pack(anchor="w", padx=5)
 
     # --- Panel Hasil & Grafik (Kanan) ---
     right_frame = ttk.Frame(root)
     right_frame.pack(side="right", expand=True, fill="both", padx=10, pady=10)
 
+    paned_window = ttk.PanedWindow(right_frame, orient="vertical")
+    paned_window.pack(fill="both", expand=True)
+
+    table_frame = ttk.LabelFrame(paned_window, text=" Tabel Hasil Ekstrapolasi Romberg ")
+    paned_window.add(table_frame, weight=1)
+    
+    tree_scroll_y = ttk.Scrollbar(table_frame, orient="vertical")
+    tree_scroll_y.pack(side="right", fill="y")
+    tree_scroll_x = ttk.Scrollbar(table_frame, orient="horizontal")
+    tree_scroll_x.pack(side="bottom", fill="x")
+
     # --- Treeview untuk Tabel Romberg ---
     # TODO: Konfigurasi kolom Treeview untuk R(k,0), R(k,1), dst.
-    tree = ttk.Treeview(right_frame, show="headings")
-    tree.pack(side="top", fill="both", expand=True)
+    tree = ttk.Treeview(table_frame, show="headings", 
+                        yscrollcommand=tree_scroll_y.set, 
+                        xscrollcommand=tree_scroll_x.set)
+    tree.pack(side="left", fill="both", expand=True)
+    
+    tree_scroll_y.config(command=tree.yview)
+    tree_scroll_x.config(command=tree.xview)
+
+    tree["columns"] = ("k", "R(k,0)", "R(k,1)")
+    tree.heading("k", text="k (Iterasi)")
+    tree.column("k", width=80, anchor="center")
+    tree.heading("R(k,0)", text="R(k,0) Trapezoid")
+    tree.column("R(k,0)", width=150, anchor="center")
+    tree.heading("R(k,1)", text="R(k,1)")
+    tree.column("R(k,1)", width=150, anchor="center")
 
     # --- Canvas untuk Matplotlib ---
     # plot_frame = ttk.Frame(right_frame)
     # plot_frame.pack(side="bottom", fill="both", expand=True)
+    plot_frame = ttk.LabelFrame(paned_window, text=" Visualisasi Area Integrasi ")
+    paned_window.add(plot_frame, weight=2)
 
     root.mainloop()
 
