@@ -9,19 +9,55 @@ import sympy as sp
 # BAGIAN B: Ferdyan Dimas Satria (Math Foundation & Visualization)
 # =========================================================================
 def initial_trapezoid(f, a, b):
-    # TODO: Implementasi R(0,0)
-    pass
+    return (b - a) / 2.0 * (f(a) + f(b))
+
 
 def recursive_trapezoid(f, a, b, k, prev_R):
-    # TODO: Implementasi R(k,0) rekursif
-    pass
+    n = 2 ** k
+    h = (b - a) / n
+
+    jumlah_titik_baru = 2 ** (k - 1)
+    sigma = 0.0
+    for i in range(1, jumlah_titik_baru + 1):
+        x_baru = a + (2 * i - 1) * h
+        sigma += f(x_baru)
+
+    return 0.5 * prev_R + h * sigma
+
 
 def plot_graph(canvas_frame, f_str, a, b):
-    """
-    Menampilkan grafik fungsi dan area integrasi di dalam GUI.
-    """
-    # TODO: Gunakan matplotlib untuk plot f(x) dan fill_between antara a dan b
-    pass
+    for widget in canvas_frame.winfo_children():
+        widget.destroy()
+
+    x = sp.Symbol('x')
+    expr = sp.sympify(f_str)
+    f_numeric = sp.lambdify(x, expr, modules=['numpy'])
+
+    margin = (b - a) * 0.2 if b != a else 1.0
+    x_vals = np.linspace(a - margin, b + margin, 400)
+    y_vals = np.array(f_numeric(x_vals), dtype=float)
+
+    fig, ax = plt.subplots(figsize=(5, 4))
+    ax.plot(x_vals, y_vals, color="royalblue", linewidth=2, label=f"f(x) = {f_str}")
+
+    x_fill = np.linspace(a, b, 200)
+    y_fill = np.array(f_numeric(x_fill), dtype=float)
+    ax.fill_between(x_fill, y_fill, color="skyblue", alpha=0.5, label=f"Luas [{a}, {b}]")
+
+    ax.axhline(0, color="black", linewidth=0.8)
+    ax.axvline(0, color="black", linewidth=0.8)
+    ax.set_xlabel("x")
+    ax.set_ylabel("f(x)")
+    ax.set_title("Grafik Fungsi dan Area Integrasi")
+    ax.legend()
+    ax.grid(True, linestyle="--", alpha=0.5)
+    fig.tight_layout()
+
+    canvas = FigureCanvasTkAgg(fig, master=canvas_frame)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side="top", fill="both", expand=True)
+
+    return canvas
 
 
 # =========================================================================
