@@ -76,9 +76,27 @@ def romberg_integration(f_callable, a, b, max_iter, tol):
     Logika utama Romberg (Richardson Extrapolation).
     Mengembalikan 2D list berisi tabel Romberg.
     """
-    # TODO: Implementasikan logika Romberg yang sudah kita diskusikan
-    # Pastikan mengembalikan data yang bisa dibaca oleh Treeview
-    pass
+    R = []
+    # k = 0: Initial Trapezoid
+    R0 = [initial_trapezoid(f_callable, a, b)]
+    R.append(R0)
+    
+    for k in range(1, max_iter + 1):
+        row = [0.0] * (k + 1)
+        # R(k, 0): Recursive Trapezoid
+        row[0] = recursive_trapezoid(f_callable, a, b, k, R[k-1][0])
+        
+        # R(k, j): Richardson Extrapolation
+        for j in range(1, k + 1):
+            row[j] = row[j-1] + (row[j-1] - R[k-1][j-1]) / (4**j - 1)
+        
+        R.append(row)
+        
+        # Cek toleransi: selisih antara estimasi terbaik saat ini dan sebelumnya
+        if abs(R[k][k] - R[k-1][k-1]) < tol:
+            break
+            
+    return R
 
 def on_calculate():
     """
@@ -94,16 +112,48 @@ def on_calculate():
 
         if not f_str:
             raise ValueError("Fungsi f(x) tidak boleh kosong.")
+        
+        if max_i < 1:
+            raise ValueError("Iterasi minimal adalah 1.")
             
         # 2. Parsing fungsi string menjadi callable (Bagian C)
+        x = sp.Symbol('x')
+        expr = sp.sympify(f_str)
+        f_numeric = sp.lambdify(x, expr, modules=['numpy'])
         
         # 3. Jalankan Integrasi Romberg (Bagian C)
+        romberg_table = romberg_integration(f_numeric, a_val, b_val, max_i, tol_val)
 
         # 4. Update Treeview (Bagian A)
+        # Hapus data lama
+        for item in tree.get_children():
+            tree.delete(item)
+            
+        # Konfigurasi kolom secara dinamis berdasarkan hasil Romberg
+        max_cols = len(romberg_table[-1])
+        columns = ["k"] + [f"R(k,{j})" for j in range(max_cols)]
+        tree["columns"] = columns
+        
+        tree.heading("k", text="k")
+        tree.column("k", width=60, anchor="center", stretch=False)
+        for j in range(max_cols):
+            col_id = f"R(k,{j})"
+            header_text = "Trapezoid" if j == 0 else f"Orde {j}"
+            tree.heading(col_id, text=f"{col_id} ({header_text})")
+            tree.column(col_id, width=150, anchor="center", minwidth=120)
+
+        # Masukkan baris data
+        for k, row in enumerate(romberg_table):
+            display_row = [k] + [f"{val:.10f}" for val in row]
+            # Isi kolom sisa dengan string kosong
+            display_row += [""] * (max_cols - len(row))
+            tree.insert("", "end", values=display_row)
 
         # 5. Update Plot (Bagian B)
+        plot_graph(plot_frame, f_str, a_val, b_val)
         
-        messagebox.showinfo("Info", "Input tervalidasi. Menunggu penyelesaian fungsi Romberg (Bagian C).")
+        final_result = romberg_table[-1][-1]
+        messagebox.showinfo("Berhasil", f"Integrasi Selesai!\nHasil Akhir: {final_result:.10f}")
         
     except ValueError as ve:
         messagebox.showerror("Kesalahan Input", f"Format input salah: {ve}")
@@ -124,9 +174,12 @@ def setup_gui():
     style = ttk.Style()
     style.theme_use('clam')
     style.configure("Treeview.Heading", font=('Helvetica', 10, 'bold'))
+    # Tambahkan rowheight untuk mencegah teks saling bertumpuk
+    style.configure("Treeview", rowheight=30, font=('Helvetica', 10))
 
     # --- Panel Input (Kiri) ---
-    left_frame = ttk.Frame(root, width=250)
+    # Lebarkan frame menjadi 320 agar proporsional
+    left_frame = ttk.Frame(root, width=700)
     left_frame.pack(side="left", fill="y", padx=10, pady=10)
     left_frame.pack_propagate(False)
 
@@ -135,15 +188,10 @@ def setup_gui():
 
     input_frame.columnconfigure(1, weight=1)
 
-    # TODO: Tambahkan Entry untuk f(x), a, b, max_iter, tol
-    # Contoh:
-    # tk.Label(input_frame, text="f(x):").grid(row=0, column=0, sticky="w")
-    # entry_f = ttk.Entry(input_frame)
-    # entry_f.grid(row=0, column=1, padx=5, pady=5)
-
     ttk.Label(input_frame, text="Fungsi f(x):").grid(row=0, column=0, sticky="w", padx=5, pady=8)
     entry_f = ttk.Entry(input_frame)
     entry_f.insert(0, "sin(x)")
+    # Ubah padx dari 50 menjadi 5 agar tidak mendorong entry terlalu ke kanan
     entry_f.grid(row=0, column=1, sticky="ew", padx=5, pady=8)
 
     ttk.Label(input_frame, text="Batas Bawah (a):").grid(row=1, column=0, sticky="w", padx=5, pady=8)
@@ -215,3 +263,4 @@ def setup_gui():
 
 if __name__ == "__main__":
     setup_gui()
+

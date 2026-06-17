@@ -30,3 +30,25 @@ C. Hadryan Rizky Dimas Saputra (Romberg Logic & Controller)
    - Data Controller: Mengolah input string dari GUI (menggunakan `sympy` atau `eval` dengan aman) menjadi nilai numerik.
    - Formatting Result: Mengonversi matriks hasil Romberg menjadi format list/tuple yang siap dimasukkan ke dalam `Treeview` oleh Farrel.
    - Error Handling: Menangani kesalahan matematis (seperti pembagian nol atau fungsi yang tidak terdefinisi di rentang tertentu) dengan `messagebox`.
+
+   ---
+
+   ### Cara Menjalankan Program
+
+   1. **Pastikan Python Terinstal**: Program ini membutuhkan Python 3.x.
+   2. **Instal Library yang Dibutuhkan**:
+   Buka terminal atau command prompt, lalu jalankan perintah berikut untuk menginstal dependensi:
+   ```bash
+   pip install numpy matplotlib sympy
+   ```
+   3. **Jalankan Aplikasi**:
+   Gunakan perintah berikut di terminal:
+   ```bash
+   python code.py
+   ```
+   4. **Cara Penggunaan**:
+   - Masukkan fungsi matematika pada kolom **Fungsi f(x)** (misal: `x**2 + sin(x)`).
+   - Masukkan batas bawah (`a`) dan batas atas (`b`).
+   - Tentukan **Maks Iterasi** dan **Toleransi Error**.
+   - Klik tombol **"Hitung Integrasi Romberg"**.
+   - Hasil akan muncul dalam bentuk tabel ekstrapolasi dan visualisasi grafik di panel sebelah kanan.
