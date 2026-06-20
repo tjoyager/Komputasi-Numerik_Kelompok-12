@@ -324,7 +324,7 @@ Fungsi ini menghitung larik sumbu-x lalu memetakannya pada sumbu-y untuk menggam
 6. **Penanganan Kesalahan (Exception Handling)**
 Apabila terdapat nilai yang tidak dapat diselesaikan atau input yang dibiarkan kosong, fungsi try-except dalam Python akan menangkap permasalahan tersebut. Akan ada notifikasi error "Kesalahan Input" untuk menghindari berhentinya paksa atau *crash* pada program.
 
-### Screenshot Hasil Program dengan Contoh Lain
+### Screenshot Hasil Program
 
 Fungsi x^2
 Batas a = 0, Batas b = 2, Iterasi = 5
