@@ -298,10 +298,6 @@ if __name__ == "__main__":
 
 ```
 
-### Screenshot Hasil Program
-
-Hasil kalkulasi program untuk mencari nilai luasan (integral) dari fungsi f(x) = sin(x), dengan batas bawah a = 0, batas atas b = 3.14159, maksimal iterasi 5, dan toleransi 1e-6:
-
 
 ### Alur Kerja Program
 
